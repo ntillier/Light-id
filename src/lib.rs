@@ -133,11 +133,29 @@ impl LightId {
         self
     }
 
+    /// Sets the possible characters, in their order of importance (custom base)
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// generator.chars("abc");
+    /// 
+    /// assert_eq!("a", generator.current());
+    /// ```
     pub fn chars<S: AsRef<str>>(&mut self, characters: S) -> &mut Self {
         self.characters = characters.as_ref().chars().collect();
         self
     }
 
+    /// Clone the current [`LighId`].
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// let mut generator2 = generator.clone();
+    /// ```
     pub fn clone(&self) -> Self {
         LightId {
             status: self.status.clone(),
@@ -146,35 +164,136 @@ impl LightId {
         }
     }
 
+    /// Returns the current number of ids
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// generator.increment();
+    /// 
+    /// assert_eq!(1, generator.count());
+    /// ```
     pub fn count(&self) -> usize {
         return self.status;
     }
 
+    /// Decrements the current id
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// generator.increment();
+    /// generator.decrement();
+    /// 
+    /// assert_eq!("a", generator.current());
+    /// ```
+    /// It is and alias of
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// generator.decrement_by(1);
+    /// ```
     pub fn decrement(&mut self) -> &mut Self {
         self.decrement_by(1)
     }
 
+    /// Decrements the current id with a given factor
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// generator.increment_by(10);
+    /// generator.decrement_by(10);
+    /// 
+    /// assert_eq!("a", generator.current());
+    /// ```
     pub fn decrement_by(&mut self, count: usize) -> &mut Self {
-        self.status -= count;
+        if count > self.status {
+            self.status = 0;
+        } else {
+            self.status -= count;
+        }
         self
     }
 
+    /// Increments the current id
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// generator.increment();
+    /// 
+    /// assert_eq!("b", generator.current());
+    /// ```
+    /// It is and alias of
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// generator.increment_by(1);
+    /// ```
     pub fn increment(&mut self) -> &mut Self {
         self.increment_by(1)
     }
 
+    /// Increments the current id with a given factor
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// generator.increment_by(2);
+    /// 
+    /// assert_eq!("c", generator.current());
+    /// ```
     pub fn increment_by(&mut self, count: usize) -> &mut Self {
         self.status += count;
 
         self
     }
 
+    /// Increments the id and returns it
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// assert_eq!("a", generator.next());
+    /// assert_eq!("b", generator.next());
+    /// assert_eq!("c", generator.next());
+    /// ```
+    /// It is an alias of
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// let value = generator.current();
+    /// generator.increment();
+    /// 
+    /// assert_eq!("a", value);
+    /// ```
     pub fn next(&mut self) -> String {
         let string = self.current();
         self.increment();
         string
     }
 
+    /// Returns the current id.
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// assert_eq!("a", generator.current());
+    /// ```
     pub fn current(&self) -> String {
 
         let mut current = String::new();
