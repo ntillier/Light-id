@@ -4,7 +4,7 @@ pub const DEFAULT_CHARACTERS: &str =
 pub struct LightId {
     pub characters: Vec<char>,
     pub min_length: usize,
-    pub status: usize,
+    status: usize,
 }
 
 
@@ -67,24 +67,6 @@ impl LightId {
     /// assert_eq!("b", generator.current());
     /// ```
     pub fn skip(&mut self, n: usize) -> &mut Self {
-        /*let mut status: Vec<usize> = vec![];
-
-        let mut remaining = n;
-
-        loop {
-            if remaining >= self.characters.len() {
-                let q = remaining % self.characters.len();
-
-                status.push(q);
-
-                remaining = (remaining - q) / self.characters.len() - 1;
-            } else {
-                status.push(remaining);
-
-                break;
-            }
-        }*/
-
         self.status = n;
 
         self
@@ -315,5 +297,24 @@ impl LightId {
         }
 
         current.chars().rev().collect()
+    }
+
+    /// Returns the length of the current id.
+    /// ```
+    /// use light_id::LightId;
+    /// 
+    /// let mut generator = LightId::new();
+    /// 
+    /// assert_eq!(0, generator.len());
+    /// 
+    /// generator.increment();
+    /// 
+    /// assert_eq!(1, generator.len());
+    /// ```
+    pub fn len (&self) -> usize {
+        if self.status == 0 {
+            return self.min_length;
+        }
+        return std::cmp::max(self.min_length, self.status.ilog(self.characters.len()) as usize + 1);
     }
 }
