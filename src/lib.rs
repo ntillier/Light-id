@@ -1,3 +1,5 @@
+mod utils;
+
 pub const DEFAULT_CHARACTERS: &str =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -6,7 +8,6 @@ pub struct LightId {
     pub min_length: usize,
     status: usize,
 }
-
 
 impl PartialEq for LightId {
     fn eq(&self, other: &Self) -> bool {
@@ -20,7 +21,6 @@ impl PartialOrd for LightId {
     }
 }
 
-
 impl LightId {
     /// Creates a new [`LightId`] with the default configuration.
     /// ```
@@ -32,7 +32,7 @@ impl LightId {
         LightId {
             status: 0,
             characters: DEFAULT_CHARACTERS.chars().collect(),
-            min_length: 0
+            min_length: 0,
         }
     }
 
@@ -52,7 +52,7 @@ impl LightId {
         LightId {
             status: 0,
             characters: characters.as_ref().chars().collect(),
-            min_length: 0
+            min_length: 0,
         }
     }
 
@@ -83,19 +83,7 @@ impl LightId {
     /// assert_eq!("c", generator.current());
     /// ```
     pub fn last<S: AsRef<str>>(&mut self, id: S) -> &mut Self {
-        let mut status = 0;
-
-        for (index, char) in id.as_ref().chars().enumerate() {
-            status += self
-                .characters
-                .iter()
-                .position(|i| i == &char)
-                .expect("Invalid character")
-                * usize::pow(self.characters.len() + 1, index.try_into().unwrap());
-        }
-
-        self.status = status;
-
+        self.status = utils::parse_id(id.as_ref(), &self.characters);
         self
     }
 
@@ -118,11 +106,11 @@ impl LightId {
     /// Sets the possible characters, in their order of importance (custom base)
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// generator.chars("abc");
-    /// 
+    ///
     /// assert_eq!("a", generator.current());
     /// ```
     pub fn chars<S: AsRef<str>>(&mut self, characters: S) -> &mut Self {
@@ -133,27 +121,27 @@ impl LightId {
     /// Clone the current [`LighId`].
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// let mut generator2 = generator.clone();
     /// ```
     pub fn clone(&self) -> Self {
         LightId {
             status: self.status.clone(),
             characters: self.characters.clone(),
-            min_length: self.min_length.clone()
+            min_length: self.min_length.clone(),
         }
     }
 
     /// Returns the current number of ids
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// generator.increment();
-    /// 
+    ///
     /// assert_eq!(1, generator.count());
     /// ```
     pub fn count(&self) -> usize {
@@ -163,20 +151,20 @@ impl LightId {
     /// Decrements the current id
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// generator.increment();
     /// generator.decrement();
-    /// 
+    ///
     /// assert_eq!("a", generator.current());
     /// ```
     /// It is and alias of
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// generator.decrement_by(1);
     /// ```
     pub fn decrement(&mut self) -> &mut Self {
@@ -186,12 +174,12 @@ impl LightId {
     /// Decrements the current id with a given factor
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// generator.increment_by(10);
     /// generator.decrement_by(10);
-    /// 
+    ///
     /// assert_eq!("a", generator.current());
     /// ```
     pub fn decrement_by(&mut self, count: usize) -> &mut Self {
@@ -206,19 +194,19 @@ impl LightId {
     /// Increments the current id
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// generator.increment();
-    /// 
+    ///
     /// assert_eq!("b", generator.current());
     /// ```
     /// It is and alias of
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// generator.increment_by(1);
     /// ```
     pub fn increment(&mut self) -> &mut Self {
@@ -228,11 +216,11 @@ impl LightId {
     /// Increments the current id with a given factor
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// generator.increment_by(2);
-    /// 
+    ///
     /// assert_eq!("c", generator.current());
     /// ```
     pub fn increment_by(&mut self, count: usize) -> &mut Self {
@@ -244,9 +232,9 @@ impl LightId {
     /// Increments the id and returns it
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// assert_eq!("a", generator.next());
     /// assert_eq!("b", generator.next());
     /// assert_eq!("c", generator.next());
@@ -254,12 +242,12 @@ impl LightId {
     /// It is an alias of
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// let value = generator.current();
     /// generator.increment();
-    /// 
+    ///
     /// assert_eq!("a", value);
     /// ```
     pub fn next(&mut self) -> String {
@@ -271,50 +259,80 @@ impl LightId {
     /// Returns the current id.
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// assert_eq!("a", generator.current());
     /// ```
     pub fn current(&self) -> String {
-
-        let mut current = String::new();
-        
-        let mut remaining: usize = self.status;
-
-        loop {
-            current.push(self.characters[remaining % self.characters.len()]);
-            
-            remaining = remaining / self.characters.len();
-
-            if remaining == 0 {
-                break;
-            }
-        }
-
-        while current.len() < self.min_length {
-            current.push(self.characters[0]);
-        }
-
-        current.chars().rev().collect()
+        utils::format_id(&self.status, &self.min_length, &self.characters)
     }
 
     /// Returns the length of the current id.
     /// ```
     /// use light_id::LightId;
-    /// 
+    ///
     /// let mut generator = LightId::new();
-    /// 
+    ///
     /// assert_eq!(0, generator.len());
-    /// 
+    ///
     /// generator.increment();
-    /// 
+    ///
     /// assert_eq!(1, generator.len());
     /// ```
-    pub fn len (&self) -> usize {
+    pub fn len(&self) -> usize {
         if self.status == 0 {
             return self.min_length;
         }
-        return std::cmp::max(self.min_length, self.status.ilog(self.characters.len()) as usize + 1);
+        return std::cmp::max(
+            self.min_length,
+            self.status.ilog(self.characters.len()) as usize + 1,
+        );
+    }
+}
+
+pub struct IdSwitcher {
+    from: Vec<char>,
+    to: Vec<char>,
+    min_length: usize,
+}
+
+impl IdSwitcher {
+    pub fn new<S: AsRef<str>>(from: S, to: S) -> Self {
+        IdSwitcher {
+            from: from.as_ref().chars().collect(),
+            to: to.as_ref().chars().collect(),
+            min_length: 0,
+        }
+    }
+
+    pub fn clone (&self) -> Self {
+        IdSwitcher {
+            from: self.from.clone(),
+            to: self.to.clone(),
+            min_length: self.min_length.clone()
+        }
+    }
+
+    pub fn min(&mut self, n: usize) -> &mut Self {
+        self.min_length = n;
+
+        self
+    }
+
+    pub fn switch_count(&self, id: usize) -> String {
+        utils::format_id(&id, &self.min_length, &self.to)
+    }
+
+    pub fn switch<S: AsRef<str>>(&self, id: S) -> String {
+        self.switch_count(utils::parse_id(id.as_ref(), &self.from))
+    }
+
+    pub fn switch_count_reverse(&self, id: usize) -> String {
+        utils::format_id(&id, &self.min_length, &self.from)
+    }
+
+    pub fn switch_reverse<S: AsRef<str>>(&self, id: S) -> String {
+        self.switch_count_reverse(utils::parse_id(id.as_ref(), &self.to))
     }
 }
