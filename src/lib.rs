@@ -101,22 +101,6 @@ impl LightId {
     /// assert_eq!("c", generator.current());
     /// ```
     pub fn last<S: AsRef<str>>(&mut self, id: S) -> &mut Self {
-        /*let mut status: Vec<usize> = vec![];
-
-        for char in id.as_ref().chars() {
-            status.push(
-                self.characters
-                    .iter()
-                    .position(|i| i == &char)
-                    .expect("Invalid character"),
-            );
-        }
-
-        status.reverse();
-
-        self.status = status;
-        */
-
         let mut status = 0;
 
         for (index, char) in id.as_ref().chars().enumerate() {
@@ -195,12 +179,12 @@ impl LightId {
 
         let mut current = String::new();
         
-        let mut remaining = self.status;
+        let mut remaining: usize = self.status;
 
         loop {
             current.push(self.characters[remaining % self.characters.len()]);
             
-            remaining /= self.characters.len();
+            remaining = remaining / self.characters.len();
 
             if remaining == 0 {
                 break;
