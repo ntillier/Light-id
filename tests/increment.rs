@@ -8,7 +8,7 @@ fn increment () {
     gen.increment();
   }
 
-  assert_eq!("aa", gen.current());
+  assert_eq!("ba", gen.current());
 }
 
 #[test]
@@ -19,18 +19,18 @@ fn increment_2 () {
     gen.increment();
   }
 
-  assert_eq!("aaa", gen.current());
+  assert_eq!("bba", gen.current());
 }
 
 #[test]
 fn increment_3 () {
   let mut gen = LightId::from("abc");
 
-  for _ in 0..12 {
+  for _ in 0..26 {
     gen.increment();
   }
 
-  assert_eq!("aaa", gen.current());
+  assert_eq!("ccc", gen.current());
 }
 
 #[test]

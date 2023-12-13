@@ -15,7 +15,7 @@ fn min_with_skip() {
 
   gen.min(10).skip(10);
 
-  assert_eq!("aaaaaaaacb", gen.current());
+  assert_eq!("aaaaaaabab", gen.current());
 }
 
 #[test]
@@ -24,5 +24,5 @@ fn skip_with_min() {
 
   gen.skip(10).min(10);
 
-  assert_eq!("aaaaaaaacb", gen.current());
+  assert_eq!("aaaaaaabab", gen.current());
 }

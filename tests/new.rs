@@ -10,6 +10,7 @@ fn skip () {
   let mut gen = LightId::from("abc");
 
   gen.skip(2);
+
   assert_eq!("c", gen.current());
 }
 
@@ -18,7 +19,7 @@ fn skip_2 () {
   let mut gen = LightId::from("abc");
   
   gen.skip(3);
-  assert_eq!("aa", gen.current());
+  assert_eq!("ba", gen.current());
 }
 
 #[test]
@@ -26,7 +27,7 @@ fn skip_3 () {
   let mut gen = LightId::from("abc");
   
   gen.skip(12);
-  assert_eq!("aaa", gen.current());
+  assert_eq!("bba", gen.current());
 }
 
 #[test]
