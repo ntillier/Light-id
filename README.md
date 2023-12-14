@@ -55,7 +55,7 @@ println!("Switched ID: {}", switched_id);
 ```
 
 ## Support
-If you encounter any issues, please report them on GitHub. I'll be pleased to help you!
+If you encounter any issues, please [report them on GitHub](https://github.com/ntillier/Light-id/issues). I'll be pleased to help you!
 
 ## License
 This crate is licensed under the [MIT License](https://opensource.org/license/mit/).
