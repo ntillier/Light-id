@@ -6,7 +6,7 @@ license = "MIT"
 description = "Generate and manipulate incremental IDs effortlessly"
 repository = "https://github.com/ntillier/Light-id"
 readme = "README.md"
-keywords = ["ids", "generator", "incremental", "lightweight", "base-switching", "customizable", "flexible"]
+keywords = ["ids", "incremental", "lightweight", "customizable", "flexible"]
 categories = ["data-structures", "parser-implementations"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
