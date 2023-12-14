@@ -42,7 +42,7 @@ fn switch_4 () {
 #[test]
 fn min () {
   let mut switch = IdSwitcher::new("abcdefg", "abcdefghijklmnop");
-  switch.min(10);
+  switch.min_target(10);
 
   assert_eq!("aaaaaaaaaa", switch.switch("a"));
 }

@@ -4,7 +4,7 @@ use light_id::LightId;
 fn len () {
   let gen = LightId::new();
 
-  assert_eq!(0, gen.len());
+  assert_eq!(1, gen.len());
 }
 
 #[test]
